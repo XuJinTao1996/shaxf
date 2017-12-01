@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^home/$', views.home),
 
     # 闪购超市
-    url(r'^market/$', views.market),
+    url(r'^market/(\d+)/(\d+)/$', views.market),
 
     # 购物车
     url(r'^cart/$', views.cart),
