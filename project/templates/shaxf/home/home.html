@@ -1,0 +1,24 @@
+{% extends 'shaxf/base/base.html' %}
+{% load static from staticfiles %}
+
+<!--链接css和Js文件板块-->
+{% block linescript %}
+<link rel="stylesheet" type="text/css" href="{% static 'shaxf/home/css/home.css' %}">
+<script type="text/javascript" charset="utf-8" src="{% static 'shaxf/home/js/home.js' %}"></script>
+{% endblock linescript %}
+
+
+<!--主体板块-->
+{% block base %}
+<div id="homeDiv">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            {% for img in imgList %}
+            <div class="swiper-slide" id="headerwheel"><a href="#"><img src="{{img.img}}"></a></div>
+            {% endfor %}
+        </div>
+        <!-- 如果需要分页器 -->
+        <div class="swiper-pagination"></div>
+    </div>
+</div>
+{% endblock base %}

@@ -1,0 +1,17 @@
+{% extends 'shaxf/base/base.html' %}
+{% load static from staticfiles %}
+
+<!--链接css和Js文件板块-->
+{% block linescript %}
+<link rel="stylesheet" type="text/css" href="{% static 'shaxf/market/market.css' %}">
+<script type="text/javascript" charset="utf-8" src="{% static 'shaxf/market/market.js' %}"></script>
+
+{% endblock linescript %}
+
+
+<!--主体板块-->
+{% block base %}
+<div id="marketDiv">
+
+</div>
+{% endblock base %}
