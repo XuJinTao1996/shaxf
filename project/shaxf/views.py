@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from .models import Wheel, Nav, Mustbuy, Shop, MainShow, FoodTypes, Goods, User
 from django.contrib.auth import logout
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+import time, random, os
+from project import settings
 # Create your views here.
 # 首页
 def home(request):
@@ -60,12 +62,21 @@ def cart(request):
 def mine(request):
     key = request.COOKIES.get('name')
     userName = request.session.get(key, '未登录')
-    return render(request, 'shaxf/mine/mine.html', {'title': '我的', 'userName': userName})
-
+    token = request.COOKIES.get('token')
+    try:
+        userImg = User.objects.get(userToken=token).userImg
+        print(userImg)
+        return render(request, 'shaxf/mine/mine.html', {'title': '我的', 'userName': userName, 'userImg': userImg})
+    except User.DoesNotExist as e:
+        return render(request, 'shaxf/mine/mine.html', {'title': '我的', 'userName': userName})
 # 登陆
 def login(request):
+
     # 判断请求类型
     if request.method == 'GET':
+        # 之前请求的页面, 在收到GET请求时保存其发起网址，存储到session 用于后期重定向
+        reAddr = request.META['HTTP_REFERER']
+        request.session['reAddr'] = reAddr
         return render(request, 'shaxf/mine/login.html')
 
     # 获取输入的用户名和密码
@@ -78,17 +89,70 @@ def login(request):
     except User.DoesNotExist as e:
         return redirect('/login/')
 
-    # 既存在该用户， 密码又相同，那么就登陆成功
+    # 既存在该用户， 密码又相同，那么就登陆成功，
     if loginPassWd == user.userPasswd:
-        res = redirect('/mine/')
+        # 获取最初发起请求网址
+        addr = request.session.get('reAddr')
+        # 并且重新生成一个token值 也保存到数据库也保存到cookies 用户后期判断用户登录状态
+        token = str(time.time())[6:] + user.userName
+        user.userToken = token
+        user.save()
+
+        res = redirect(addr)
         request.session['name'] = user.userName
         res.set_cookie('name', 'name')
+        res.set_cookie('token', token)
         return res
 
 # 注册
 def register(request):
-    return render(request, 'shaxf/mine/register.html')
+    if request.method == 'GET':
+        return render(request, 'shaxf/mine/register.html')
+    # 账号
+    userAccount = request.POST.get('userAccount')
+    try:
+        # 如果用户已经存在则返回1
+        dbUser = User.objects.get(userAccount=userAccount)
+        return JsonResponse({'data': 1})
 
+    except User.DoesNotExist as e:
+        # 密码
+        userPass = request.POST.get('userPass')
+        userPasswd = request.POST.get('userPasswd')
+        # 用户名
+        userName = request.POST.get('userName')
+        # 手机号
+        userPhone = request.POST.get('userPhone')
+        # 用户地址
+        userAdderss = request.POST.get('userAdderss')
+        # 处理用户上传的照片
+        imgObj = request.FILES.get('userImg')
+        filePath = os.path.join(settings.MEDIA_ROOT[0], imgObj.name)
+        with open(filePath, 'wb') as file:
+            for c in imgObj.chunks():
+                file.write(c)
+
+        # 在数据库中存储用户头像地址
+        path = filePath.split("\\")[-3:]
+        myPath = ''
+        for i in path:
+            myPath += '/' + i
+        userImg = myPath
+
+        # 随机生成token
+        token = str(time.time())[6:] + str(userAccount)
+
+        # 在数据库中创建用户
+        user = User.createuser(userAccount, userPasswd, userName, userPhone, userAdderss, userImg, 1, token)
+        user.save()
+
+        # 令当前注册账号为登陆状态
+        request.session['name'] = userAccount
+        res = redirect('/mine/')
+        res.set_cookie('name', 'name')
+        res.set_cookie('token', token)
+
+        return res
 
 # 退出
 def quit(request):
