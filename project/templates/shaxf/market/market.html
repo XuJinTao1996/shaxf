@@ -14,7 +14,7 @@
                 {% for item in leftSlider %}
                 <li>
                     <span id="{{item.typeid}}"></span>
-                    <a href="/market/{{item.typeid}}/0/">{{item.typename}}</a>
+                    <a href="/market/{{item.typeid}}/0/0/">{{item.typename}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -52,21 +52,20 @@
                 {% endfor %}
             </ul>
 
-
             <div id="typediv">
                 <div>
                     {% for item in childList %}
-                    <a href="/market/{{gid}}/{{item.childId}}/"><span>{{item.childName}}</span></a>
+                    <a href="/market/{{gid}}/{{item.childId}}/0/"><span>{{item.childName}}</span></a>
                     {% endfor %}
                 </div>
             </div>
 
             <div id="sortdiv">
                 <div>
-                    <a href="/market/{{gid}}/{{cid}}/" class="sorta"><span>综合排序</span></a>
-                    <a href="/market/{{gid}}/{{cid}}/" class="sorta"><span>销量排序</span></a>
-                    <a href="/market/{{gid}}/{{cid}}/" class="sorta"><span>价格最低</span></a>
-                    <a href="/market/{{gid}}/{{cid}}/" class="sorta"><span>价格最高</span></a>
+                    <a href="/market/{{gid}}/{{cid}}/0/" class="sorta"><span>综合排序</span></a>
+                    <a href="/market/{{gid}}/{{cid}}/1/" class="sorta"><span>销量排序</span></a>
+                    <a href="/market/{{gid}}/{{cid}}/2/" class="sorta"><span>价格最低</span></a>
+                    <a href="/market/{{gid}}/{{cid}}/3/" class="sorta"><span>价格最高</span></a>
                 </div>
             </div>
         </menu>

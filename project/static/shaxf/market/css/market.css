@@ -177,7 +177,7 @@ section menu > div > div > a > span {
 
 
 #typediv{
-    display: block;
+    display: none;
 }
 
 
@@ -190,12 +190,12 @@ li > section {
   border-radius: 1rem; }
 section > button {
   background: white;
-  border: 1px solid orange;
+  border: 1px solid #e0e0e0;
   border-radius: 1111px;
   color: red;
   display: inline-block;
   text-align: center;
-  line-height: 0.55rem;
+  line-height: 0.4rem;
   font-weight: 900;
   width: 0.5rem;
   height: 0.5rem; }
